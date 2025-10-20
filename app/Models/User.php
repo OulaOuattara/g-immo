@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'lastName',
+        'phone',
+        'address',
+        'role_id',
     ];
 
     /**
@@ -45,4 +49,35 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function client()
+    {
+        return $this->hasOne(Client::class);
+    }
+
+    public function bailleur()
+    {
+        return $this->hasOne(Bailleur::class);
+    }
+
+    public function agent()
+    {
+        return $this->hasOne(Agent::class);
+    }
+
+    public function manager()
+    {
+        return $this->hasOne(Manager::class);
+    }
+
+    public function properties()
+    {
+        return $this->hasMany(Property::class);
+    }
+    
 }
