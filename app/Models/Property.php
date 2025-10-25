@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Policies\PropertyPolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +20,7 @@ class Property extends Model
         'pays',
         'ville',
         'status',
-        'bailleur_id',
+        'user_id',
     ];
 
     public function bailleur()

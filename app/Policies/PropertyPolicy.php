@@ -5,7 +5,7 @@ namespace App\Policies;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
-
+use Illuminate\Auth\Access\HandlesAuthorization;
 class PropertyPolicy
 {
     /**
@@ -13,7 +13,7 @@ class PropertyPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,6 +21,12 @@ class PropertyPolicy
      */
     public function view(User $user, Property $property): bool
     {
+        if (!$user->role) return false;
+        $role = $user->role->name;
+        if ($role === 'manager') return true;
+        if ($role === 'agent') return true;
+        if ($role === 'bailleur') return $property->owner_id === $user->id;
+        if ($role === 'client') return $property->is_published;
         return false;
     }
 
@@ -29,7 +35,7 @@ class PropertyPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return in_array(optional($user->role)->name, ['manager','agent','bailleur']);
     }
 
     /**
@@ -37,6 +43,10 @@ class PropertyPolicy
      */
     public function update(User $user, Property $property): bool
     {
+        $role = optional($user->role)->name;
+        if ($role === 'manager') return true;
+        if ($role === 'agent') return true; // agent can edit any property per spec
+        if ($role === 'bailleur') return $property->user_id === $user->id;
         return false;
     }
 
@@ -45,7 +55,7 @@ class PropertyPolicy
      */
     public function delete(User $user, Property $property): bool
     {
-        return false;
+         return $this->update($user, $property);
     }
 
     /**

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Manager;
 use App\Http\Requests\StoreManagerRequest;
 use App\Http\Requests\UpdateManagerRequest;
+use App\Models\Role;
+use App\Models\User;
 
 class ManagerController extends Controller
 {
@@ -21,7 +23,9 @@ class ManagerController extends Controller
      */
     public function create()
     {
-        //
+        $roles= Role::all();
+        
+        return view('Manager.create', compact('roles'));
     }
 
     /**
@@ -29,7 +33,23 @@ class ManagerController extends Controller
      */
     public function store(StoreManagerRequest $request)
     {
-        //
+        // dd($request);
+        $user = User::create([
+            'name' => $request->name,
+            'lastName' => $request->lastName,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'role_id' => $request->role_id,
+            'password' => bcrypt($request->password),
+        ]);
+
+        $manager = Manager::create([
+            'user_id' => $user->id,
+        ]);
+
+        dd($manager);
+        return redirect()->route('Manager.create')->with('success', 'Nouveau manager créer avec succès.');
     }
 
     /**

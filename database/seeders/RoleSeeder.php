@@ -13,19 +13,6 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('roles')->insert([
-            [
-                'name' => 'client', 'description' => 'Client de l\'agence immobilière'
-            ],
-            [
-                'name' => 'bailleur', 'description' => 'Propriétaire de biens immobiliers'
-            ],
-            [
-                'name' => 'agent', 'description' => 'Agent immobilier'
-            ],
-            [
-                'name' => 'manager', 'description' => 'Manager de l\'agence'
-            ],
-        ]);
+        
     }
 }

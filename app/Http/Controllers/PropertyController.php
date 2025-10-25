@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Property;
 use App\Http\Requests\StorePropertyRequest;
 use App\Http\Requests\UpdatePropertyRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PropertyController extends Controller
 {
@@ -21,7 +23,8 @@ class PropertyController extends Controller
      */
     public function create()
     {
-        //
+        dd("Hello");
+        dd(Gate::allows('create', Property::class));
     }
 
     /**
