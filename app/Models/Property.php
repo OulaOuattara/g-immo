@@ -25,10 +25,10 @@ class Property extends Model
 
     public function bailleur()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 
-    public function property_photo()
+    public function photos()
     {
         return $this->hasMany(PropertyPhoto::class);
     }

@@ -15,10 +15,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('acceuil');
 })->name('acceuil');
-Route::get('/search', [PropertyController::class, 'search'])->name('properties.search');
-Route::get('/filter', [PropertyController::class, 'filter'])->name('properties.filter');
-Route::get('/properties/{id}', [PropertyController::class, 'show'])->name('properties.show');
-
 
 // Authentication routes
 Route::get('login', [AuthController::class, 'login'])->name('login');
@@ -38,3 +34,8 @@ Route::resource('clients', ClientController::class);
 Route::resource('roles', RoleController::class);
 Route::resource('bailleurs', BailleurController::class);
 Route::resource('appointments', AppointmentController::class);
+
+// Custom route for user's properties
+Route::get('/my/properties', [PropertyController::class, 'myProperties'])
+    ->name('properties.mine')
+    ->middleware('auth');

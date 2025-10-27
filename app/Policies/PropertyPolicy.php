@@ -13,7 +13,7 @@ class PropertyPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+         return in_array(optional($user->role)->name, ['manager', 'agent', 'bailleur']);
     }
 
     /**
@@ -45,7 +45,7 @@ class PropertyPolicy
     {
         $role = optional($user->role)->name;
         if ($role === 'manager') return true;
-        if ($role === 'agent') return true; // agent can edit any property per spec
+        if ($role === 'agent') return true; 
         if ($role === 'bailleur') return $property->user_id === $user->id;
         return false;
     }
