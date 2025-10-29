@@ -38,6 +38,12 @@ class Property extends Model
         return $this->hasMany(Favorite::class);
     }
 
+    public function favoredBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites')
+                    ->withTimestamps();
+    }
+
     public function appointments()
     {
         return $this->hasMany(Appointment::class);

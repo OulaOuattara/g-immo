@@ -11,7 +11,7 @@ class StoreFavoriteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,15 @@ class StoreFavoriteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'property_id' => 'required|exists:properties,id',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'property_id.required' => 'La propriété est requise.',
+            'property_id.exists' => 'La propriété sélectionnée est invalide.',
         ];
     }
 }

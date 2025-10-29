@@ -7,7 +7,6 @@
         <form action="{{ route('properties.update', $property->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
-
             {{-- Type --}}
             <div>
                 <label for="type" class="block text-gray-700 font-medium mb-2">Type</label>

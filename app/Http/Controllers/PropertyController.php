@@ -46,16 +46,20 @@ class PropertyController extends Controller
             });
         }
 
-        if (!empty($filters['type'] ?? [])) {
-            $query->whereIn('type', $filters['type']);
+        // Filtres avancés : type, usage, option
+        if (!empty($filters['type'] ?? null)) {
+            $types = is_array($filters['type']) ? $filters['type'] : [$filters['type']];
+            $query->whereIn('type', $types);
         }
 
-        if (!empty($filters['usage'] ?? [])) {
-            $query->whereIn('usage', $filters['usage']);
+        if (!empty($filters['usage'] ?? null)) {
+            $usages = is_array($filters['usage']) ? $filters['usage'] : [$filters['usage']];
+            $query->whereIn('usage', $usages);
         }
 
-        if (!empty($filters['option'] ?? [])) {
-            $query->whereIn('option', $filters['option']);
+        if (!empty($filters['option'] ?? null)) {
+            $options = is_array($filters['option']) ? $filters['option'] : [$filters['option']];
+            $query->whereIn('option', $options);
         }
 
         if (!empty($filters['ville'] ?? null)) {
@@ -68,8 +72,16 @@ class PropertyController extends Controller
 
         //Exécution de la requête avec pagination
         $allowedFilters = ['search', 'type', 'usage', 'option', 'ville', 'prix_max'];
+
+        foreach (['type', 'usage', 'option'] as $key) {
+            if (!empty($filters[$key]) && !is_array($filters[$key])) {
+                $filters[$key] = [$filters[$key]];
+            }
+        }
         $filtered = array_intersect_key($filters, array_flip($allowedFilters));
         $properties = $query->orderBy('created_at', 'desc')->paginate(9)->appends($filtered);
+
+
 
         //Retourne la vue avec les filtres actifs
         return view('property.index', [
@@ -78,20 +90,42 @@ class PropertyController extends Controller
         ]);
     }
 
-    public function myProperties()
+    public function myProperties(Request $request)
     {
         $user = Auth::user();
-        // Autorisation : uniquement pour les bailleurs
-        // if (optional($user->role)->name !== 'bailleur') {
-        //     abort(403, 'Accès réservé aux bailleurs.');
-        // }
+        
+        if($user->role->name == 'manager' OR $user->role->name == 'agent'){ 
+            $query = Property::with('photos');
+        }elseif($user->role->name == 'bailleur'){
+              // Récupère uniquement les propriétés de ce bailleur
+            $query = Property::with('photos')
+                ->where('user_id', $user->id);
+        }
 
-        // Récupère uniquement les propriétés de ce bailleur
-        $properties = Property::with('photos')
-            ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('ville', 'ILIKE', "%{$search}%")
+                ->orWhere('type', 'ILIKE', "%{$search}%")
+                ->orWhere('option', 'ILIKE', "%{$search}%")
+                ->orWhere('usage', 'ILIKE', "%{$search}%");
+            });
+        }
 
+        // 🔹 Filtres
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('option')) {
+            $query->where('option', $request->option);
+        }
+
+        $properties = $query->orderBy('created_at', 'desc')->paginate(10)->appends($request->query());
         return view('property.mine', compact('properties'));
     }
 
@@ -166,7 +200,6 @@ class PropertyController extends Controller
      */
     public function edit($id)
     {
-
         $property = Property::with('photos')->findOrFail($id);
         if(Gate::allows('update', $property)) {
             return view('property.edit', compact('property')); 
@@ -176,6 +209,8 @@ class PropertyController extends Controller
         
     }
 
+
+    
     /**
      * Update the specified resource in storage.
      */

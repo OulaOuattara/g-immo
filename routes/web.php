@@ -24,6 +24,22 @@ Route::post('post-registration', [AuthController::class, 'postRegistration'])->n
 Route::get('dashboard', [AuthController::class, 'dashboard']); 
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
+
+// Custom route for user's properties
+Route::get('/properties/mine', [PropertyController::class, 'myProperties'])
+    ->name('properties.mine');
+
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::middleware('can:isManager')->group(function () {
+        Route::get('/manager/clients', [ClientController::class, 'index'])->name('clients.index');
+        Route::put('/manager/clients/{client}/assign-agent', [ClientController::class, 'assignAgent'])->name('clients.assignAgent');
+        Route::delete('/manager/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
+    });
+});
+
+
 // Resource routes
 Route::resource('properties', PropertyController::class);
 Route::resource('agents', AgentController::class);
@@ -34,8 +50,3 @@ Route::resource('clients', ClientController::class);
 Route::resource('roles', RoleController::class);
 Route::resource('bailleurs', BailleurController::class);
 Route::resource('appointments', AppointmentController::class);
-
-// Custom route for user's properties
-Route::get('/my/properties', [PropertyController::class, 'myProperties'])
-    ->name('properties.mine')
-    ->middleware('auth');

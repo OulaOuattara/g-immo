@@ -11,13 +11,13 @@ class Favorite extends Model
     use HasFactory;
 
     protected $fillable = [
-        'client_id',
+        'user_id',
         'property_id',
     ];
 
-    public function client()
+    public function user()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(User::class);
     }
 
     public function property()

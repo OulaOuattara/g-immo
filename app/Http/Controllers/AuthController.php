@@ -75,16 +75,13 @@ class AuthController extends Controller
             $manager = Manager::create([
                 'user_id' => $user->id,
             ]);
-
-            Auth::login($user);
-            return redirect()->route('dashboard');
+            return redirect()->route('managers.index');
         } elseif ($request->role_id == Role::where('name', 'agent')->first()->id) {
             $agent = Agent::create([
                 'user_id' => $user->id,
             ]);
 
-            Auth::login($user);
-            return redirect()->route('dashboard');
+            return redirect()->route('agents.index');
         } elseif ($request->role_id == Role::where('name', 'bailleur')->first()->id) {
             // Create Bailleur
             $bailleur = Bailleur::create([
@@ -92,7 +89,7 @@ class AuthController extends Controller
             ]);
 
             Auth::login($user);
-            return redirect()->route('dashboard');
+            return redirect()->route('acceuil');
         } elseif ($request->role_id == Role::where('name', 'client')->first()->id) {
             // Create Client
             $client = Client::create([
@@ -100,7 +97,7 @@ class AuthController extends Controller
             ]);
 
             Auth::login($user);
-            return redirect()->route('dashboard');
+            return redirect()->route('acceuil');
         }
 
     }

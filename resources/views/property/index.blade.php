@@ -23,6 +23,25 @@
                 </div>
                 <div class="w-full h-0.5 bg-orange-500 mb-2"></div>
             @endif
+            @if (Auth::check() && optional(Auth::user()->role)->name === 'client')
+                <div class="mb-6 text-center">
+                    <a href="{{ route('favorites.index') }}"
+                    class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-medium">
+                    Mes propriétés favorites
+                    </a>
+                </div>
+                <div class="w-full h-0.5 bg-orange-500 mb-2"></div>
+            @endif
+
+            @if (Auth::check() && (optional(Auth::user()->role)->name === 'manager' || optional(Auth::user()->role)->name === 'agent'))
+                <div class="mb-6 text-center">
+                    <a href="{{ route('properties.mine') }}"
+                    class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-medium">
+                    Gérer les propriétés
+                    </a>
+                </div>
+                <div class="w-full h-0.5 bg-orange-500 mb-2"></div>
+            @endif
 
             <div class="flex items-center justify-center m-2 p-2"><h3 class="text-lg font-bold text-gray-600">Appliquez des filtres</h3></div>
             <x-filters :filters="$filters" />

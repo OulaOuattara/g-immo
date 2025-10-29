@@ -21,7 +21,7 @@ class Client extends Model
     
     public function agent()
     {
-        return $this->belongsTo(User::class, 'agent_id');
+        return $this->belongsTo(Agent::class, 'agent_id');
     }
 
     public function appointments()
@@ -29,8 +29,5 @@ class Client extends Model
         return $this->hasMany(Appointment::class);
     }
 
-    public function favorites()
-    {
-        return $this->hasMany(Favorite::class);
-    }
+   
 }

@@ -16,7 +16,6 @@ class Appointment extends Model
         'agent_id',
         'appointment_date',
         'type',
-        'status',
     ];
 
     public function client()

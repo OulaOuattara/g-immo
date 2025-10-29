@@ -21,12 +21,20 @@ class PropertyPolicy
      */
     public function view(User $user, Property $property): bool
     {
-        if (!$user->role) return false;
-        $role = $user->role->name;
-        if ($role === 'manager') return true;
-        if ($role === 'agent') return true;
-        if ($role === 'bailleur') return $property->owner_id === $user->id;
-        if ($role === 'client') return $property->is_published;
+        $role = optional($user->role)->name;
+
+        if ($role === 'manager' || $role === 'agent') {
+            return true;
+        }
+
+        if ($role === 'bailleur') {
+            return $property->user_id === $user->id;
+        }
+
+        if ($role === 'client') {
+            return $property->status === 'disponible';
+        }
+
         return false;
     }
 
@@ -44,9 +52,15 @@ class PropertyPolicy
     public function update(User $user, Property $property): bool
     {
         $role = optional($user->role)->name;
-        if ($role === 'manager') return true;
-        if ($role === 'agent') return true; 
-        if ($role === 'bailleur') return $property->user_id === $user->id;
+
+        if (in_array($role, ['manager', 'agent'])) {
+            return true;
+        }
+
+        if ($role === 'bailleur') {
+            return $property->user_id === $user->id;
+        }
+
         return false;
     }
 

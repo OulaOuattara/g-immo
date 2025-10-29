@@ -24,5 +24,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Property::class, PropertyPolicy::class);
+        Gate::define('isManager', function ($user) {
+            return optional($user->role)->name === 'manager';
+        });
     }
 }

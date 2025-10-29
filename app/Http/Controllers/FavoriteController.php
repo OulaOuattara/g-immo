@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Favorite;
 use App\Http\Requests\StoreFavoriteRequest;
 use App\Http\Requests\UpdateFavoriteRequest;
+use App\Models\Property;
+use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
@@ -13,7 +15,18 @@ class FavoriteController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter.');
+        }
+
+        // On récupère les favoris avec leurs propriétés associées
+        $favorites = \App\Models\Favorite::with('property.photos')
+            ->where('user_id', $user->id)
+            ->get();
+
+        return view('favorite.index', compact('favorites'));
     }
 
     /**
@@ -29,7 +42,26 @@ class FavoriteController extends Controller
      */
     public function store(StoreFavoriteRequest $request)
     {
-        //
+         $user = Auth::user();
+
+        if (!$user || $user->role->name !== 'client') {
+            return redirect()->back()->with('error', 'Seuls les clients peuvent ajouter des favoris.');
+        }
+
+        $exists = Favorite::where('user_id', $user->id)
+                          ->where('property_id', $request->property_id)
+                          ->exists();
+
+        if ($exists) {
+            return redirect()->back()->with('info', 'Cette propriété est déjà dans vos favoris.');
+        }
+
+        Favorite::create([
+            'user_id' => $user->id,
+            'property_id' => $request->property_id,
+        ]);
+
+        return redirect()->back()->with('success', 'Propriété ajoutée aux favoris !');
     }
 
     /**
@@ -61,6 +93,14 @@ class FavoriteController extends Controller
      */
     public function destroy(Favorite $favorite)
     {
-        //
+        $client = Auth::user();
+
+        if ($favorite->user_id !== $client->id) {
+            abort(403, 'Action non autorisée.');
+        }
+
+        $favorite->delete();
+
+        return redirect()->back()->with('success', 'Propriété retirée des favoris.');
     }
 }
