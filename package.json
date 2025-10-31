@@ -19,6 +19,7 @@
     "dependencies": {
         "@tailwindplus/elements": "^1.0.18",
         "alpinejs": "^3.15.0",
+        "aos": "^2.3.4",
         "chart.js": "^4.5.1"
     },
     "name": "g-immo",

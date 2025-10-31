@@ -7,6 +7,7 @@ use App\Http\Controllers\BailleurController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyPhotoController;
 use App\Http\Controllers\RoleController;
@@ -15,6 +16,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('acceuil');
 })->name('acceuil');
+
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
 
 // Authentication routes
 Route::get('login', [AuthController::class, 'login'])->name('login');
@@ -29,14 +38,20 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/properties/mine', [PropertyController::class, 'myProperties'])
     ->name('properties.mine');
 
-
-
 Route::middleware(['auth'])->group(function () {
     Route::middleware('can:isManager')->group(function () {
         Route::get('/manager/clients', [ClientController::class, 'index'])->name('clients.index');
         Route::put('/manager/clients/{client}/assign-agent', [ClientController::class, 'assignAgent'])->name('clients.assignAgent');
         Route::delete('/manager/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
     });
+});
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 });
 
 

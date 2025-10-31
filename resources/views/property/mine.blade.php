@@ -4,23 +4,39 @@
         {{-- 🔹 Titre + bouton d’ajout --}}
         <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 border-b pb-3 space-y-3 md:space-y-0">
             <h2 class="text-2xl font-semibold text-gray-800">
-                🏠 Mes propriétés
+                @if(Auth::user()->role->name == 'bailleur')
+                    Mes propriétés
+                @endif
+                 @if(Auth::user()->role->name == 'manager' OR Auth::user()->role->name == 'agent')
+                    Propriétés
+                @endif
             </h2>
+            <div class="flex flex-col md:flex-row justify-between md:items-center space-x-2 space-y-2">
 
-            <a href="{{ route('properties.create') }}"
-               class="inline-flex items-center justify-center px-4 py-2 bg-orange-500 text-white font-medium rounded-lg shadow hover:bg-orange-600 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 4v16m8-8H4"/>
-                </svg>
-                Ajouter une propriété
-            </a>
+                <a href="{{ route('properties.index') }}"
+                   class="inline-flex items-center justify-center px-4 py-2 bg-gray-200 text-black font-medium rounded-lg shadow hover:bg-gray-300 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 4v16m8-8H4"/>
+                    </svg>
+                    retour
+                </a>
+                <a href="{{ route('properties.create') }}"
+                   class="inline-flex items-center justify-center px-4 py-2 bg-orange-500 text-white font-medium rounded-lg shadow hover:bg-orange-600 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Ajouter une propriété
+                </a>
+            </div>
         </div>
 
         {{-- 🔹 Barre de recherche et filtres --}}
         <form method="GET" action="{{ route('properties.mine') }}" class="mb-6 bg-gray-50 p-4 rounded-lg shadow-sm">
-            <div class="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-3 md:space-y-0">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:space-x-4 space-y-3 lg:space-y-0">
 
                 {{-- Champ de recherche --}}
                 <input type="text" name="search" value="{{ request('search') }}"

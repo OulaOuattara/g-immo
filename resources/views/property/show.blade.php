@@ -88,9 +88,9 @@
 
             {{-- DÉTAILS DU PROPRIÉTAIRE --}}
             @auth
-                @if (in_array(Auth::user()->role->name, ['manager', 'agent']))
+                @if (in_array(Auth::user()->role->name, ['manager', 'agent','bailleur']))
                     <div class="mt-8 border-t pt-6">
-                        <h2 class="text-xl font-semibold text-gray-700 mb-3">👤 Détails du propriétaire</h2>
+                        <h2 class="text-xl font-semibold text-gray-700 mb-3">Détails du propriétaire</h2>
                         <p><span class="font-medium text-gray-600">Nom :</span> {{ $property->bailleur->name ?? 'Non renseigné' }}</p>
                         <p><span class="font-medium text-gray-600">Email :</span> {{ $property->bailleur->email ?? 'Non renseigné' }}</p>
                         <p><span class="font-medium text-gray-600">Téléphone :</span> {{ $property->bailleur->phone ?? 'Non renseigné' }}</p>

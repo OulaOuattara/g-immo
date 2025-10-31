@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
     @vite('node_modules/@tailwindplus/elements/dist/index.js')
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <title>Document</title>
 </head>
 <body class="">
@@ -26,5 +27,16 @@
         {{ $slot }}
         </div>
     </main>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        AOS.init({
+        duration: 1000,
+        easing: "ease-in-out",
+        offset: 120,
+        once: true,
+        });
+    });
+    </script>
 </body>
 </html>
